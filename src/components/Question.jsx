@@ -1,5 +1,7 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import ProgressBar from "./ProgressBar";
+import Loader from "./Loader";
+import useTimer from "../customHooks/useTimer";
 //function to shuffle the options
 function shuffleOptions(optionsArray){
     for (let i=optionsArray.length-1;i>0;i--){
@@ -17,10 +19,10 @@ function reducer(state, action) {
       return {
         ...state,
         question: action.payLoad?.question,
-        correctAnswer: action.payLoad.correct_answer,
+        correctAnswer: action.payLoad?.correct_answer,
         options:shuffleOptions([
           ...action.payLoad.incorrect_answers,
-          action.payLoad.correct_answer,
+          action.payLoad?.correct_answer,
          
         ])
       };
@@ -36,24 +38,26 @@ function reducer(state, action) {
         const {answerClicked,curQuestion,correctAnswer}=action.payLoad
         const isCorrect=answerClicked===correctAnswer;
         const newAnswers=[...state.answers];
-        newAnswers[curQuestion]={selected:answerClicked,isCorrect:isCorrect}
+        newAnswers[curQuestion]={selected:answerClicked,isCorrect:isCorrect,curPoint:isCorrect?action.correctPoint:action.wrongPoint}
        return {...state,answers:newAnswers}
     }
       
 
   }
 }
-function Question({ questions, setQuestions }) {
+function Question({intervalRef,time,setTime, questions, setQuestions,curMarks,setCurMarks,setIsSubmitted,setWrongQuestions,setSkippedQuestions,setCorrectQuestions,correctQuestions }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isLoading, setIsLoading] = useState(true);
   const [curQuestion, setCurQuestion] = useState(0);
+  const {minutes,seconds,handleTimer}=useTimer(intervalRef,time,setTime,setCurQuestion,curQuestion,questions,setIsSubmitted,setSkippedQuestions,curMarks,setCurMarks,correctQuestions,setCorrectQuestions,state);
+ 
   //fetch data from the API
 
   useEffect(() => {
     async function getData() {
       try {
         const response = await fetch(
-          `https://opentdb.com/api.php?amount=50&category=18&type=multiple`
+          `https://opentdb.com/api.php?amount=10&category=18&type=multiple`
         );
         if (!response.ok) throw new Error(response);
         const result = await response.json();
@@ -69,41 +73,91 @@ function Question({ questions, setQuestions }) {
     }
     getData();
   }, [setQuestions]);
+  //effect to set the questions
   useEffect(function(){
     if(questions?.length>0){
         dispatch({type:'setQuestion',payLoad:questions[curQuestion]})
     }
   },[questions?.length,curQuestion,questions])
-
+  
+  
+//if data is loading
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loader />
   }
   //function for loading the nextquestion
   function handleNextQuestion() {
     if(curQuestion<questions.length-1){
+      
         setCurQuestion((cur)=>cur+1)
     }
+     handleTimer();
+   console.log(curQuestion,questions.length)
+     if(curQuestion===questions.length-1 || time===0){
+        console.log(curMarks);
+      state.answers.forEach((el)=>{
+        if(el.curPoint){
+          setCurMarks((curM)=>curM+el.curPoint)
+          // setIsSubmitted(true)
+        }
+        if(el.selected && el.isCorrect){
+          setCorrectQuestions(c=>c+1)
+        }
+        if(el.selected && !el.isCorrect){
+          setWrongQuestions(w=>w+1)
+        }
+        if(!el.selected){
+          setSkippedQuestions(s=>Number(s)+1)
+        }
+      })
+      setIsSubmitted(true)
+     }
   }
+  
   //function for loading the previousquestion
-  function handlePreviousQuestion() {
-    if(curQuestion>0){
-        setCurQuestion(cur=>cur-1)
-    }
-  }
+  // function handlePreviousQuestion() {
+  //   if(curQuestion>0){
+  //       setCurQuestion(cur=>cur-1)
+  //   }
+  // }
   //function to check answer
   function handleCheckAnswer(answerClicked) {
     if(state.answers[curQuestion]?.selected) return
     dispatch({
       type: "checkAnswer",
-      payLoad: {answerClicked,curQuestion,correctAnswer:state.correctAnswer}
+      payLoad: {answerClicked,curQuestion,correctAnswer:state.correctAnswer},
+      correctPoint:1,
+      wrongPoint:-0.25
     });
+   setTimeout(()=>{setCurQuestion((cur)=>cur+1)},1000)
+    handleTimer();
+    console.log(curQuestion,questions.length)
+    if(curQuestion===questions.length-1 && time===0){
+      console.log(curMarks);
+state.answers.forEach((el)=>{
+        if(el.curPoint){
+          setCurMarks((curM)=>curM+el.curPoint)
+          // setIsSubmitted(true)
+        }
+        if(el.selected && el.isCorrect){
+          setCorrectQuestions(c=>c+1)
+        }
+        if(el.selected && !el.isCorrect){
+          setWrongQuestions(w=>w+1)
+        }
+        if(!el.selected){
+          setSkippedQuestions(s=>Number(s)+1)
+        }
+      })
+      setIsSubmitted(true);
+    }
   }
 const currentAnswer=state.answers[curQuestion];
 const hasAttempted=currentAnswer?.selected!==null;
 
   return (
-    <div className=" h-[70vh] flex flex-col items-center justify-center">
-      <div className="w-[60%]">
+    <div className=" h-[70vh] flex flex-col items-center justify-center ">
+      <div className="w-[60%] p-10 bg-gray-950 rounded-2xl">
         <div>
           <ProgressBar
             currentQuestionIndex={curQuestion + 1}
@@ -113,9 +167,9 @@ const hasAttempted=currentAnswer?.selected!==null;
             <h2 className="text-1xl text-amber-50">
               Question {curQuestion + 1} of {questions?.length}
             </h2>
-            <span className="bg-blue-600 px-3 py-1 rounded-full">5:00</span>
+            <span className="bg-blue-600 px-3 py-1 rounded-full">{String(minutes).padStart(2,'0')}:{String(seconds).padStart(2,'0')}</span>
           </div>
-          <h2 className="text-3xl mb-4">{state.question}</h2>
+          <h2 className="text-3xl mb-4 text-white">{state.question}</h2>
         </div>
         <ul>
           {state.options.map((el) => {
@@ -123,7 +177,7 @@ const hasAttempted=currentAnswer?.selected!==null;
               <li
                 key={el}
                 onClick={() => handleCheckAnswer(el)}
-                className={`${hasAttempted?el===state.correctAnswer?'bg-amber-300':currentAnswer.selected===el?'bg-red-600':'bg-violet-500':'bg-violet-500'} w-full  py-3 px-3 rounded-lg text-2xl mb-1 hover:bg-violet-400`}
+                className={`${hasAttempted?el===state.correctAnswer?'bg-green-800 text-white transition-all duration-200 ease-in translate-x-5':currentAnswer?.selected===el?'bg-red-600':'bg-violet-500':'bg-gray-700'} w-full  py-3 px-3 rounded-lg text-2xl mb-1 hover:bg-gray-300 hover:text-black`}
               >
                 {el}
               </li>
@@ -131,21 +185,21 @@ const hasAttempted=currentAnswer?.selected!==null;
           })}
         </ul>
         <div className="items-center flex justify-between mt-[1rem]">
-          {curQuestion === 0 && <div></div>}
-          {curQuestion >= 1 && (
+          <div></div>
+          {/* {curQuestion >= 1 && (
             <button
               className="border-1 px-2 py-1 rounded-full hover:bg-white"
               onClick={() => handlePreviousQuestion()}
             >
               Previous
             </button>
-          )}
-          <button
-            className="border-1 px-5 py-1 rounded-full hover:bg-white"
+          )} */}
+         {!hasAttempted && <button
+            className="border-1 bg-indigo-500 transition-all ease-in duration-300 px-5 py-1 rounded-full hover:bg-white"
             onClick={() => handleNextQuestion()}
           >
-            {curQuestion === questions?.length - 1 ? "Submit" : "Next"}
-          </button>
+            {curQuestion === questions?.length - 1 ? "Submit" : "Skip"}
+          </button>}
         </div>
       </div>
     </div>

@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify"
+import useTimer from "../customHooks/useTimer";
 
-function Home({userName,setUserName}) {
+function Home({userName,setUserName,time,setTime,intervalRef}) {
     //sets the username and also checks weather userName is present there or not
-    const [userInput,setUserInput]=useState()
+    const [userInput,setUserInput]=useState();
+    const {minutes,seconds,handleTimer}=useTimer(intervalRef,time,setTime);
     function handleUserName(uName){
+        
         if(!uName) {
             
             toast.warn('Please enter the username to get started');
@@ -12,6 +15,7 @@ function Home({userName,setUserName}) {
         }
         else{
             setUserName(uName)
+            handleTimer()
         }
     }
     return (
@@ -19,10 +23,10 @@ function Home({userName,setUserName}) {
             <ToastContainer position="top-center" />
             <div >
                 
-                <h1 className="text-[4rem]">Welcome, to the Quiz app</h1>
+                <h1 className="text-[4rem] text-white">Welcome, to the Quiz app</h1>
             </div>
             <div className="w-[100%] flex items-center justify-center">
-            <input className="border-[1px] p-[1rem] rounded-lg text-3xl" type="text" placeholder="Enter you name to start quiz" onChange={(e)=>setUserInput(e.target.value)} />
+            <input className="border-[1px] border-white text-white p-[1rem] rounded-lg text-3xl" type="text" placeholder="Enter you name to start quiz" onChange={(e)=>setUserInput(e.target.value)} />
             <button className=" ml-[5px] border-[1px] bg-black text-white py-[1.2rem] px-[0.5rem] text-2xl rounded-md hover:bg-white hover:text-black" onClick={()=>handleUserName(userInput)}>Start Quiz</button>
         </div>
         </div>
