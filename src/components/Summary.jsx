@@ -19,27 +19,31 @@ setCorrectQuestions(0)
 
     }
     return (
-        <div className="w-[100%] h-[50vh] flex flex-col items-center justify-center">
-            <h1 className="text-5xl mb-5">Result</h1>
-        <div className=" rounded-lg flex justify-between items-center p-6 w-[50%] h-[25vh] bg-blue-500">
-           <div className="hover:bg-violet-600 rounded-2xl bg-violet-800 w-[15%] h-[100%] border-1 flex flex-col items-center justify-center">
-            <h2 className="text-[1.3rem] text-white">Total Marks</h2>
-            <p className="text-[1.2rem] text-white">{curMarks}/{totalMarks}</p>
+        <div className="w-[100%] h-[90vh] flex flex-col items-center justify-center">
+            <h1 className="text-5xl mb-5 text-white">Result</h1>
+        <div className=" rounded-lg flex flex-col justify-between items-center p-6 w-[60%] h-[50vh] bg-black">
+           <div className=" transition-all duration-300 hover:bg-violet-600 hover:px-3 hover:rounded-2xl px-3 w-[70%] h-[100%] flex flex-row items-center justify-between">
+            <h2 className="text-[1.3rem] text-white">Marks obtained</h2>
+            <p className="text-[1.2rem] text-white">{curMarks}</p>
             </div>
-         <div className="hover:bg-violet-600 rounded-2xl bg-violet-800 w-[15%] h-[100%] border-1 flex flex-col items-center justify-center">
-            <h2 className="text-[1.3rem] text-white">Correct</h2>
+            <div className="transition-all duration-300 hover:bg-violet-600 hover:px-3 hover:rounded-2xl px-3 w-[70%] h-[100%] flex flex-row items-center justify-between">
+            <h2 className="text-[1.3rem] text-white">Total Marks</h2>
+            <p className="text-[1.2rem] text-white">{totalMarks}</p>
+            </div>
+            <div className="transition-all duration-300 hover:bg-violet-600 hover:px-3 hover:rounded-2xl px-3 w-[70%] h-[100%] flex flex-row items-center justify-between">
+            <h2 className="text-[1.3rem] text-white">correct</h2>
             <p className="text-[1.2rem] text-white">{correctQuestions}</p>
             </div>
-              <div className="hover:bg-violet-600 rounded-2xl bg-violet-800 w-[15%] h-[100%] border-1 flex flex-col items-center justify-center">
+            <div className="transition-all duration-300 hover:bg-violet-600 hover:px-3 hover:rounded-2xl px-3 w-[70%] h-[100%] flex flex-row items-center justify-between">
             <h2 className="text-[1.3rem] text-white">wrong</h2>
             <p className="text-[1.2rem] text-white">{wrongQuestions}</p>
             </div>
-             <div className="hover:bg-violet-600 rounded-2xl bg-violet-800 w-[15%] h-[100%] border-1 flex flex-col items-center justify-center">
-            <h2 className="text-[1.3rem] text-white">Skipped</h2>
+            <div className="transition-all duration-300 hover:bg-violet-600 hover:px-3 hover:rounded-2xl px-3 w-[70%] h-[100%] flex flex-row items-center justify-between">
+            <h2 className="text-[1.3rem] text-white">skipped</h2>
             <p className="text-[1.2rem] text-white">{skippedQuestions}</p>
             </div>
         </div>
-        <button className="border-2 mt-5 px-2 py-1 rounded-lg text-2xl" onClick={()=>handleRestart()} >Restart Quiz</button>
+        <button className="hover:bg-indigo-400 transition-all duration-300  text-[1rem] mt-5 px-3 py-2 rounded-lg bg-indigo-600 text-white" onClick={()=>handleRestart()} >Restart Quiz</button>
         </div>
     )
 }

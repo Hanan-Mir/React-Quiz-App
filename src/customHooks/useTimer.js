@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function useTimer(intervalRef,time,setTime,setCurQuestion,curQuestion,questions,setIsSubmitted,setSkippedQuestions,correctQuestions,setCorrectQuestions,state) {
+function useTimer(intervalRef,time,setTime,setCurQuestion,curQuestion,questions,setIsSubmitted,setSkippedQuestions,correctQuestions,setCorrectQuestions,setWrongQuestions,setCurMarks,setPendingSubmit) {
      const [minutes,setMinutes]=useState(0);
   const [seconds,setSeconds]=useState(0)
   
@@ -13,23 +13,17 @@ const currentSeconds=Math.floor(remainingSeconds/1000000);
 setMinutes(currentMinutes);
 setSeconds(currentSeconds);
 //Handling the situation when the time becomes zero and user doesn't click the answer
-if(time===0 ){
-  setCurQuestion(cur=>cur+1)
-  setSkippedQuestions(q=>q+1);
-  setCorrectQuestions(correctQuestions)
-  setTime(30000000)
+// if(time===0 && curQuestion <questions.length-1){
+//   setCurQuestion(q=>q+1);
+//   setTime(30000000)
+//   setPendingSubmit(true);
+//   }
+//   if(time===0 && curQuestion ===questions.length-1 ){
+//     console.log('Heo')
+// setPendingSubmit(true);
+//   }
 
-  if(curQuestion===questions.length-1){
-  setIsSubmitted(true);
-
-  }
-}
-// if(time===0 && curQuestion===questions.length-1){
-//   //   setSkippedQuestions(q=>q+1);
-//   // setCorrectQuestions(correctQuestions)
-
-// }
-  },[setCorrectQuestions,correctQuestions,time,setCurQuestion,setTime,curQuestion,questions?.length,setIsSubmitted,setSkippedQuestions,intervalRef])
+  },[setPendingSubmit,setCorrectQuestions,correctQuestions,time,setCurQuestion,setTime,curQuestion,questions?.length,setIsSubmitted,setSkippedQuestions,intervalRef,setCurMarks,setWrongQuestions])
   
   //function to handleTime
   function handleTimer(){

@@ -27,7 +27,7 @@ function Home({userName,setUserName,time,setTime,intervalRef}) {
             </div>
             <div className="w-[100%] flex items-center justify-center">
             <input className="border-[1px] border-white text-white p-[1rem] rounded-lg text-3xl" type="text" placeholder="Enter you name to start quiz" onChange={(e)=>setUserInput(e.target.value)} />
-            <button className=" ml-[5px] border-[1px] bg-black text-white py-[1.2rem] px-[0.5rem] text-2xl rounded-md hover:bg-white hover:text-black" onClick={()=>handleUserName(userInput)}>Start Quiz</button>
+            <button className=" ml-[5px] border-[1px] bg-indigo-600 transition-all duration-300 text-black py-[1.2rem] px-[0.5rem] text-2xl rounded-md hover:bg-black hover:text-white" onClick={()=>handleUserName(userInput)}>Start Quiz</button>
         </div>
         </div>
     )
