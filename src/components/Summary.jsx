@@ -21,7 +21,7 @@ setCorrectQuestions(0)
     return (
         <div className="w-[100%] h-[90vh] flex flex-col items-center justify-center">
             <h1 className="text-5xl mb-5 text-white">Result</h1>
-        <div className=" rounded-lg flex flex-col justify-between items-center p-6 w-[60%] h-[50vh] bg-black">
+        <div className=" rounded-lg flex flex-col justify-between items-center p-6 lg:w-[60%] h-[50vh] bg-black w-[90%]">
            <div className=" transition-all duration-300 hover:bg-violet-600 hover:px-3 hover:rounded-2xl px-3 w-[70%] h-[100%] flex flex-row items-center justify-between">
             <h2 className="text-[1.3rem] text-white">Marks obtained</h2>
             <p className="text-[1.2rem] text-white">{curMarks}</p>

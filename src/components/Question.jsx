@@ -115,20 +115,20 @@ const currentAnswer=state.answers[curQuestion];
 const hasAttempted=currentAnswer?.selected!==null;
 
   return (
-    <div className=" h-[70vh] flex flex-col items-center justify-center ">
-      <div className="w-[60%] p-10 bg-gray-950 rounded-2xl">
+    <div className=" flex flex-col items-center justify-center h-[70vh] lg:flex lg:flex-col lg:items-center lg:justify-center ">
+      <div className="lg:w-[60%] lg:p-10 bg-gray-950 lg:rounded-2xl w-[100%] p-5 rounded-2xl">
         <div>
           <ProgressBar
             currentQuestionIndex={curQuestion + 1}
             totalQuestion={questions?.length}
           />
-          <div className="flex items-center justify-between mt-6">
+          <div className="lg:flex lg:items-center lg:justify-between lg:mt-6 flex items-center justify-between mt-3">
             <h2 className="text-1xl text-amber-50">
               Question {curQuestion + 1} of {questions?.length}
             </h2>
-            <span className="bg-blue-600 px-3 py-1 rounded-full">{String(minutes).padStart(2,'0')}:{String(seconds).padStart(2,'0')}</span>
+            <span className="bg-blue-600 lg:px-3 lg:py-1 lg:rounded-full rounded-full px-1 text-1xl">{String(minutes).padStart(2,'0')}:{String(seconds).padStart(2,'0')}</span>
           </div>
-          <h2 className="text-3xl mb-4 text-white">{state.question}</h2>
+          <h2 className="lg:text-3xl lg:mb-4 text-white mt-2 mb-2">{state.question}</h2>
         </div>
         <ul>
           {state.options.map((el) => {
@@ -136,25 +136,17 @@ const hasAttempted=currentAnswer?.selected!==null;
               <li
                 key={el}
                 onClick={() => handleCheckAnswer(el)}
-                className={`${hasAttempted?el===state.correctAnswer?'bg-green-800 text-white transition-all duration-200 ease-in translate-x-5':currentAnswer?.selected===el?'bg-red-600':'bg-violet-500':'bg-gray-700'} w-full  py-3 px-3 rounded-lg text-2xl mb-1 hover:bg-gray-300 hover:text-black`}
+                className={`${hasAttempted?el===state.correctAnswer?'bg-green-800 text-white transition-all duration-200 ease-in translate-x-3 lg:translate-x-5':currentAnswer?.selected===el?'bg-red-600':'bg-violet-500':'bg-gray-700'} w-full  lg:py-3 lg:px-3 rounded-lg lg:text-2xl lg:mb-1 px-2 py-2 mb-2 hover:bg-gray-300 hover:text-black`}
               >
                 {el}
               </li>
             );
           })}
         </ul>
-        <div className="items-center flex justify-between mt-[1rem]">
+        <div className="lg:items-center lg:flex lg:justify-between lg:mt-[1rem] flex items-center justify-between">
           <div></div>
-          {/* {curQuestion >= 1 && (
-            <button
-              className="border-1 px-2 py-1 rounded-full hover:bg-white"
-              onClick={() => handlePreviousQuestion()}
-            >
-              Previous
-            </button>
-          )} */}
          {!hasAttempted && <button
-            className="border-1 bg-indigo-500 transition-all ease-in duration-300 px-5 py-1 rounded-full hover:bg-white"
+            className="lg:border-1 bg-indigo-500 lg:transition-all lg:ease-in lg:duration-300 lg:px-5 lg:py-1 lg:rounded-full hover:bg-white mt-3 px-5 py-1 rounded-full "
             onClick={() => handleNextQuestion()}
           >
             {curQuestion === questions?.length - 1 ? "Submit" : "Skip"}
